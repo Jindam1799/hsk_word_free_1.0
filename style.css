@@ -548,3 +548,47 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 5;
 }
+
+/* --- 잠금 팝업 내 구매 카드 스타일 --- */
+.locked-promo-card {
+  background-color: #ecfdf5; /* 연한 초록색 배경 */
+  border: 2px solid var(--primary); /* 진한 초록색 테두리 */
+  border-radius: 12px;
+  padding: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(4, 120, 87, 0.1);
+}
+
+.locked-promo-card:active {
+  transform: scale(0.96);
+  background-color: #d1fae5;
+}
+
+.promo-content {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 12px;
+}
+
+.promo-emoji {
+  font-size: 1.8rem;
+}
+
+.promo-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.arrow-icon {
+  font-size: 1.5rem;
+  color: var(--primary);
+  font-weight: bold;
+}
