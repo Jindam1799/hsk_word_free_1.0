@@ -1,4 +1,4 @@
-\const QUESTION_COUNT = 20;
+const QUESTION_COUNT = 20;
 const TIME_LIMIT = 10;
 
 // --- 상태 변수 ---
