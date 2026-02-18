@@ -1,4 +1,4 @@
-const QUESTION_COUNT = 20;
+\const QUESTION_COUNT = 20;
 const TIME_LIMIT = 10;
 
 // --- 상태 변수 ---
@@ -83,11 +83,12 @@ function init() {
     exitModal.style.display = 'none';
     showScreen('lobby-screen');
   };
+  // [수정] 잠금 모달 닫기 버튼 이벤트
   const lockedModal = document.getElementById('locked-modal');
-  const lockedConfirmBtn = document.getElementById('locked-confirm-btn');
+  const lockedCloseBtn = document.getElementById('locked-close-btn');
 
-  if (lockedConfirmBtn) {
-    lockedConfirmBtn.onclick = () => {
+  if (lockedCloseBtn) {
+    lockedCloseBtn.onclick = () => {
       lockedModal.style.display = 'none';
     };
   }
