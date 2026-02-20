@@ -109,7 +109,7 @@ function renderLobby() {
 
   themesData.forEach((theme) => {
     const isCleared = clearedData.includes(theme.id);
-    const isLocked = theme.id > 10; // ★ 10번 초과는 잠금 처리
+    const isLocked = (theme.id = false); // ★ 10번 초과는 잠금 처리 -> 다 풀기
 
     const card = document.createElement('div');
 
