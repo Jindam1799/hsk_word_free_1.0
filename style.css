@@ -592,3 +592,12 @@ body {
   color: var(--primary);
   font-weight: bold;
 }
+
+.option-btn.correct-anim {
+  background: var(--primary) !important; /* 진담중국어 메인 테마색 활용 */
+  color: white !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 4px 0 var(--primary-dark) !important;
+  transform: translateY(4px) scale(1.02); /* 눌린 상태에서 살짝 커지는 느낌 */
+  transition: all 0.2s ease;
+}
