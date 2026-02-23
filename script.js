@@ -191,26 +191,83 @@ function renderQuestion() {
   let wrongAnswer;
   let attempts = 0;
 
+  // ★ 추가된 기능: 글자가 달라도 같은 뜻으로 간주할 '유의어 그룹'
+  const synonymGroups = [
+    ['예쁘', '아름답'],
+    ['미안', '죄송', '사과'],
+    ['감사', '고맙'],
+    ['기쁘', '즐겁', '행복', '유쾌', '만족'],
+    ['슬프', '괴롭', '상심', '우울', '난처'],
+    ['조금', '약간'],
+    ['매우', '아주', '대단히', '너무', '가장', '제일'],
+    ['모두', '전부', '다', '일체'],
+    ['항상', '늘', '언제나', '자주', '종종'],
+    ['그러나', '하지만', '그렇지만', '그런데', '오히려'],
+    ['만약', '만일', '설령'],
+    ['알다', '이해', '인식'],
+    ['바꾸', '교환'],
+    ['크다', '많다'],
+    ['작다', '적다', '어리다'],
+  ];
+
   do {
     const randomIdx = Math.floor(Math.random() * currentTheme.words.length);
     wrongAnswer = currentTheme.words[randomIdx].mean;
     attempts++;
 
-    const answerKeywords = q.mean.split(',').map((s) => s.trim());
-    const isOverlapping = answerKeywords.some((keyword) =>
-      wrongAnswer.includes(keyword),
-    );
+    // 1. 괄호 내용(예: "(가벼운 사과)")과 특수기호를 제거하고 순수 단어만 분리
+    const cleanString = (str) =>
+      str.replace(/\([^)]*\)/g, '').replace(/[,/~\.]/g, ' ');
+    const ansWords = cleanString(q.mean)
+      .split(/\s+/)
+      .filter((w) => w.length > 0);
+    const wrongWords = cleanString(wrongAnswer)
+      .split(/\s+/)
+      .filter((w) => w.length > 0);
 
+    let isOverlapping = false;
+
+    // 2. 단어 간 겹침 꼼꼼하게 확인 (예: '미안합니다'와 '미안하다'도 걸러냄)
+    for (let w1 of ansWords) {
+      for (let w2 of wrongWords) {
+        if (w1.length >= 2 && w2.length >= 2) {
+          if (w1.includes(w2) || w2.includes(w1)) {
+            isOverlapping = true;
+            break;
+          }
+        } else if (w1 === w2) {
+          isOverlapping = true; // 1글자는 완전히 같을 때만
+          break;
+        }
+      }
+      if (isOverlapping) break;
+    }
+
+    // 3. 유의어(동의어) 그룹 확인 (예: 정답이 '예쁘다'인데 오답이 '아름답다'인 경우 걸러냄)
+    if (!isOverlapping) {
+      for (let group of synonymGroups) {
+        const ansHas = group.some((syn) => q.mean.includes(syn));
+        const wrongHas = group.some((syn) => wrongAnswer.includes(syn));
+        if (ansHas && wrongHas) {
+          isOverlapping = true; // 둘 다 같은 유의어 그룹에 속하면 중복으로 간주
+          break;
+        }
+      }
+    }
+
+    // 겹치거나 완전히 동일하면 wrongAnswer를 비워서 다시 뽑게 만듦
     if (isOverlapping || wrongAnswer === q.mean) {
       wrongAnswer = null;
     }
-  } while (!wrongAnswer && attempts < 30 && currentTheme.words.length > 1);
+  } while (!wrongAnswer && attempts < 50 && currentTheme.words.length > 1);
 
+  // 50번 시도해도 적당한 오답이 안 나오면 무작위 선택 (무한 루프 방지)
   if (!wrongAnswer) {
     const randomIdx = Math.floor(Math.random() * currentTheme.words.length);
     wrongAnswer = currentTheme.words[randomIdx].mean;
   }
 
+  // --- 버튼에 정답/오답 텍스트 입력 및 클릭 이벤트 할당 ---
   const btn1 = document.getElementById('btn-1');
   const btn2 = document.getElementById('btn-2');
   const newBtn1 = btn1.cloneNode(true);
